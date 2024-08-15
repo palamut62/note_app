@@ -71,3 +71,11 @@ class NoteForm(forms.ModelForm):
                     instance.tags.add(tag)
 
         return instance
+
+from django import forms
+from .models import Profile
+
+class ProfileImageForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['profile_image']

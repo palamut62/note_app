@@ -1,0 +1,7 @@
+<!-- update_profile_image.html -->
+<h2>Profil Resmini Güncelle</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Güncelle</button>
+</form>

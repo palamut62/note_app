@@ -1,125 +1,170 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
+{% block extra_css %}
+    <style>
+        .profile-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%; /* Daire yapmak için */
+            object-fit: cover; /* Resmin tam olarak sığmasını sağlar */
+            border: 2px solid #ccc; /* Daire çerçeve ekler (isteğe bağlı) */
+        }
+
+
+        .profile-section h3 {
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+    </style>
+
+{% endblock %}
 {% block content %}
-<div class="col-md-3 sidebar">
-    <!-- Sidebar içeriği -->
-    <div class="sidebar-content">
-        <h4>Kategoriler</h4>
-        <ul class="list-unstyled" id="categoryList">
-            {% for category in categories %}
-                <li class="d-flex justify-content-between align-items-center mb-2">
-                    {{ category.name }}
-                    <div>
-                        <i class="fas fa-edit edit-category" data-id="{{ category.id }}"></i>
-                         <i class="fas fa-trash delete-category" data-id="{{ category.id }}"></i>
-                       
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-        <button id="addCategory" class="btn btn-success mb-3 w-100">Kategori Ekle</button>
+    <div class="col-md-3 sidebar">
+        <!-- Sidebar içeriği -->
+        <div class="sidebar-content">
 
-        <h5>Aktif Hatırlatıcılar</h5>
-        <ul class="list-unstyled" id="activeReminders">
-            {% for note in active_reminders %}
-                <li class="mb-2">
-                    <input type="checkbox" id="reminder-{{ note.id }}">
-                    <label for="reminder-{{ note.id }}">
-                        {{ note.title }}
-                        <small class="text-muted d-block">{{ note.reminder|date:"d/m/Y H:i" }}</small>
-                    </label>
-                </li>
-            {% empty %}
-                <li>Aktif hatırlatıcı yok</li>
-            {% endfor %}
-        </ul>
+            <div class="profile-section">
+                <label for="profile-picture-input">
+                    <a href="{% url 'update_profile_image' %}">
+                        {% if profile_image.profile_image %}
+                            <img src="{{ profile_image.profile_image.url }}" alt="Profile Picture"
+                                 class="profile-picture"
+                                 id="profile-picture-preview">
+                        {% else %}
+                            <img src="{% static 'images/default.jpeg' %}" alt="Profile Picture"
+                                 class="profile-picture"
+                                 id="profile-picture-preview">
+                        {% endif %}
+                    </a>
+                </label>
+                <h3>{{ user.username }}</h3>
+            </div>
 
-        <h5>Etiketler</h5>
-        <div class="tag-cloud">
-            {% for tag in tags %}
-                <span class="tag" data-id="{{ tag.id }}">#{{ tag.name }}</span>
-            {% endfor %}
-        </div>
-    </div>
-</div>
 
-<div class="col-md-9 main-content">
-    <!-- Butonları burada sağ üst köşede göstereceğiz -->
-    <div class="d-flex justify-content-end mb-3">
-        <a class="btn btn-primary me-2" href="{% url 'dashboard' %}">Ana Sayfa</a>
-        <a class="btn btn-primary me-2" href="{% url 'create_note' %}">Yeni Not</a>
-        <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                {{ user.username }}
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
-                <li><a class="dropdown-item" href="{% url 'logout' %}">Çıkış Yap</a></li>
+            <h5>Kategoriler</h5>
+            <ul class="list-unstyled" id="categoryList">
+                {% for category in categories %}
+                    <li class="d-flex justify-content-between align-items-center mb-2">
+                        {{ category.name }}
+                        <div>
+                            <i class="fas fa-edit edit-category" data-id="{{ category.id }}"></i>
+                            <i class="fas fa-trash delete-category" data-id="{{ category.id }}"></i>
+
+                        </div>
+                    </li>
+                {% endfor %}
             </ul>
+            <button id="addCategory" class="btn btn-success mb-3 w-100">Kategori Ekle</button>
+
+            <h5>Aktif Hatırlatıcılar</h5>
+            <ul class="list-unstyled" id="activeReminders">
+                {% for note in active_reminders %}
+                    <li class="mb-2">
+                        <input type="checkbox" id="reminder-{{ note.id }}">
+                        <label for="reminder-{{ note.id }}">
+                            {{ note.title }}
+                            <small class="text-muted d-block">{{ note.reminder|date:"d/m/Y H:i" }}</small>
+                        </label>
+                    </li>
+                {% empty %}
+                    <li>Aktif hatırlatıcı yok</li>
+                {% endfor %}
+            </ul>
+
+            <h5>Etiketler</h5>
+            <div class="tag-cloud">
+                {% for tag in tags %}
+                    <span class="tag" data-id="{{ tag.id }}">#{{ tag.name }}</span>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
-    <!-- Notların listelendiği alan -->
-    <h4>Notlar</h4>
-    <div class="notes-grid">
-        {% for note in notes %}
-            <div class="note" style="background-color: {{ note.color|default:'#ffd700' }};" data-id="{{ note.id }}">
-                <h3>{{ note.title }}</h3>
-                <p>{{ note.content|truncatechars:100 }}</p>
-                <div class="note-footer">
-                    <small>{{ note.created_at|date:"M d, Y" }}</small>
-                    <div class="note-actions">
-                        <i class="fas fa-edit edit-note" data-id="{{ note.id }}"></i>
-                        <i class="fas fa-trash delete-note" data-id="{{ note.id }}"></i>
+    <div class="col-md-9 main-content">
+        <!-- Butonları burada sağ üst köşede göstereceğiz -->
+        <div class="d-flex justify-content-end mb-3">
+            <a class="btn btn-primary me-2" href="{% url 'dashboard' %}">Ana Sayfa</a>
+            <a class="btn btn-primary me-2" href="{% url 'create_note' %}">Yeni Not</a>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="userMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ user.username }}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Çıkış Yap</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Notların listelendiği alan -->
+        <h4>Notlar</h4>
+        <div class="notes-grid">
+            {% for note in notes %}
+                <div class="note" style="background-color: {{ note.color|default:'#ffd700' }};" data-id="{{ note.id }}">
+                    <h3>{{ note.title }}</h3>
+                    <p>{{ note.content|truncatechars:100 }}</p>
+                    <div class="note-footer">
+                        <small>{{ note.created_at|date:"M d, Y" }}</small>
+                        <div class="note-actions">
+                            <i class="fas fa-edit edit-note" data-id="{{ note.id }}"></i>
+                            <i class="fas fa-trash delete-note" data-id="{{ note.id }}"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% empty %}
-            <p>Henüz not yok. Yeni bir not oluşturun!</p>
-        {% endfor %}
-    </div>
-</div>
-    
-   <!-- Kategori Ekleme Modalı -->
-<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="categoryModalLabel">Yeni Kategori Ekle</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="categoryForm">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="categoryName" class="form-label">Kategori Adı</label>
-                        <input type="text" class="form-control" id="categoryName" name="name" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Ekle</button>
-                </form>
-            </div>
+            {% empty %}
+                <p>Henüz not yok. Yeni bir not oluşturun!</p>
+            {% endfor %}
         </div>
     </div>
-</div>
 
-<!-- Silme Onay Modalı -->
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmModalLabel">Silme İşlemini Onayla</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Bu öğeyi silmek istediğinizden emin misiniz?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                <button type="button" class="btn btn-danger" id="confirmDelete">Sil</button>
+    <!-- Kategori Ekleme Modalı -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoryModalLabel">Yeni Kategori Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="categoryForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label">Kategori Adı</label>
+                            <input type="text" class="form-control" id="categoryName" name="name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Ekle</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Silme Onay Modalı -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Silme İşlemini Onayla</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bu öğeyi silmek istediğinizden emin misiniz?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Sil</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block extra_js %}

@@ -5,11 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from .models import Note, Category, Tag
-from .forms import NoteForm
+from .forms import NoteForm, ProfileImageForm
+from .models import Profile
 
 @login_required
 def dashboard(request):
-    notes = Note.objects.filter(user=request.user).order_by('-created_at')
+    notes = Note.objects.filter(user=request.user)
+    profile_image = Profile.objects.filter(user=request.user).first()  # İlk profili al
     categories = Category.objects.filter(user=request.user)
     tags = Tag.objects.filter(user=request.user)
     active_reminders = Note.objects.filter(user=request.user, reminder__gt=timezone.now()).order_by('reminder')[:5]
@@ -17,7 +19,8 @@ def dashboard(request):
         'notes': notes,
         'categories': categories,
         'tags': tags,
-        'active_reminders': active_reminders
+        'active_reminders': active_reminders,
+        'profile_image':profile_image
     })
 
 @login_required
@@ -103,3 +106,22 @@ def add_tag(request):
         tag, created = Tag.objects.get_or_create(name=name, user=request.user)
         return JsonResponse({'id': tag.id, 'name': tag.name})
     return JsonResponse({'error': 'Invalid tag name'}, status=400)
+
+
+@login_required
+def update_profile_image(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = ProfileImageForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')  # Profil sayfasına yönlendirme, URL'ini güncelle
+    else:
+        form = ProfileImageForm(instance=profile)
+
+    return render(request, 'notes/update_profile_image.html', {'form': form})
+
+
+
+

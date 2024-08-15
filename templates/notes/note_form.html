@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
+    <style>
+        .reminder-group {
+            display: flex;
+            align-items: center;
+        }
+        .reminder-group input[type="checkbox"] {
+            margin-right: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ action }} Note</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            {% if field.name != 'reminder' and field.name != 'reminder_active' %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="form-group reminder-group">
+            {{ form.reminder_active }}
+            <label for="{{ form.reminder_active.id_for_label }}">{{ form.reminder_active.label }}</label>
+            {{ form.reminder }}
+            {% if form.reminder.errors %}
+                <div class="error">{{ form.reminder.errors }}</div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('input[data-role="tagsinput"]').tagsinput();
+
+        var $reminderCheckbox = $('#{{ form.reminder_active.id_for_label }}');
+        var $reminderDatetime = $('#{{ form.reminder.id_for_label }}');
+
+        function toggleReminderDatetime() {
+            if ($reminderCheckbox.is(':checked')) {
+                $reminderDatetime.prop('disabled', false);
+            } else {
+                $reminderDatetime.prop('disabled', true);
+            }
+        }
+
+        $reminderCheckbox.change(toggleReminderDatetime);
+        toggleReminderDatetime();  // Initial state
+    });
+</script>
+{% endblock %}

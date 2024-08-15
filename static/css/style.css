@@ -1,0 +1,102 @@
+body {
+    background-color: #1e1e2e;
+    color: #ffffff;
+    font-family: 'Inconsolata', monospace;
+    font-size: 14px;
+
+
+}
+
+.navbar {
+    background-color: #3a3a4f;
+}
+
+.sidebar {
+    background-color: #2a2a3a;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.note {
+    background-color: #3a3a4f;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.note h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+}
+
+.note-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.note-actions i {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #4a4a5f;
+    color: #ffffff;
+    padding: 2px 8px;
+    margin: 2px;
+    border-radius: 12px;
+    font-size: 0.8em;
+}
+
+.btn-primary, .btn-secondary, .btn-success {
+    background-color: #7e57c2;
+    border-color: #7e57c2;
+}
+
+.btn-primary:hover, .btn-secondary:hover, .btn-success:hover {
+    background-color: #6a4caf;
+    border-color: #6a4caf;
+}
+
+#categoryList li, #activeReminders li {
+    background-color: #3a3a4f;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.notes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.note {
+    width: calc(33.333% - 10px);
+}
+
+@media (max-width: 768px) {
+    .note {
+        width: 100%;
+    }
+}
+.sidebar {
+    background-color: #2a2a3a; /* Side bar için arka plan rengi */
+    height: 100vh; /* Tam sayfa yüksekliği */
+    overflow-y: auto;
+    padding: 20px;
+
+}
+
+.main-content {
+    background-color: #3a3a4f; /* Notların listelendiği alan için aynı arka plan rengi */
+    padding: 20px;
+}

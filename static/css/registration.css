@@ -1,0 +1,68 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9; /* Arka plan rengi */
+}
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Sayfanın tamamını kapsar */
+}
+
+.auth-form {
+    background-color: #ffffff; /* Kartın arka plan rengi */
+    padding: 40px;
+    border-radius: 8px; /* Kartın köşelerini yuvarlar */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hafif gölge verir */
+    width: 100%;
+    max-width: 400px; /* Kartın genişliği */
+}
+
+.auth-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333333; /* Başlık rengi */
+}
+
+.auth-form .form-group {
+    margin-bottom: 20px;
+}
+
+.auth-form .form-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #cccccc; /* Input kenarlığı */
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff; /* Buton rengi */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.auth-form button:hover {
+    background-color: #0056b3; /* Hover durumunda buton rengi */
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.auth-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.auth-link a:hover {
+    text-decoration: underline;
+}

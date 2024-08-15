@@ -1,10 +1,6 @@
-body, html {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9; /* Arka plan rengi */
-}
 
+
+/* Oturum Açma/Kayıt Alanı */
 .auth-container {
     display: flex;
     justify-content: center;
@@ -12,8 +8,9 @@ body, html {
     height: 100vh; /* Sayfanın tamamını kapsar */
 }
 
+/* Form Kartı */
 .auth-form {
-    background-color: #ffffff; /* Kartın arka plan rengi */
+    background-color: #2a2a3a; /* Kartın arka plan rengi */
     padding: 40px;
     border-radius: 8px; /* Kartın köşelerini yuvarlar */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hafif gölge verir */
@@ -21,48 +18,63 @@ body, html {
     max-width: 400px; /* Kartın genişliği */
 }
 
+/* Başlık */
 .auth-form h2 {
     text-align: center;
     margin-bottom: 20px;
-    color: #333333; /* Başlık rengi */
+    color: #ffffff; /* Başlık rengi */
 }
 
+/* Form Grupları */
 .auth-form .form-group {
     margin-bottom: 20px;
 }
 
+/* Giriş Alanları */
 .auth-form .form-group input {
     width: 100%;
     padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #cccccc; /* Input kenarlığı */
+    border-radius: 5px; /* Yuvarlak köşeler */
+    border: 1px solid #4a4a5f; /* Input kenarlığı */
+    background-color: #3a3a4f; /* Input arka plan rengi */
+    color: #ffffff; /* Yazı rengi */
 }
 
+/* Odak Durumu */
+.auth-form .form-group input:focus {
+    border-color: #7e57c2; /* Odaklandığında kenar rengi */
+    background-color: #4a4a5f; /* Odaklandığında arka plan rengi */
+}
+
+/* Butonlar */
 .auth-form button {
     width: 100%;
     padding: 10px;
-    background-color: #007bff; /* Buton rengi */
+    background-color: #7e57c2; /* Buton rengi */
     color: #ffffff;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px; /* Yuvarlak köşeler */
     cursor: pointer;
     font-size: 16px;
 }
 
+/* Buton Hover Durumu */
 .auth-form button:hover {
-    background-color: #0056b3; /* Hover durumunda buton rengi */
+    background-color: #6a4caf; /* Hover durumunda buton rengi */
 }
 
+/* Bağlantılar */
 .auth-link {
     text-align: center;
     margin-top: 20px;
+    color: #ffffff; /* Bağlantı rengi */
 }
 
 .auth-link a {
-    color: #007bff;
+    color: #7e57c2; /* Bağlantı rengi */
     text-decoration: none;
 }
 
 .auth-link a:hover {
-    text-decoration: underline;
+    text-decoration: underline; /* Hover durumunda altı çizili */
 }

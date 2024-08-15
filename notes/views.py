@@ -108,19 +108,24 @@ def add_tag(request):
     return JsonResponse({'error': 'Invalid tag name'}, status=400)
 
 
+from django.http import JsonResponse
+
 @login_required
 def update_profile_image(request):
-    profile, created = Profile.objects.get_or_create(user=request.user)
-
     if request.method == 'POST':
-        form = ProfileImageForm(request.POST, request.FILES, instance=profile)
+        form = ProfileImageForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
-            form.save()
-            return redirect('dashboard')  # Profil sayfasına yönlendirme, URL'ini güncelle
-    else:
-        form = ProfileImageForm(instance=profile)
-
-    return render(request, 'notes/update_profile_image.html', {'form': form})
+            profile = form.save()
+            return JsonResponse({
+                'success': True,
+                'image_url': profile.profile_image.url
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'error': form.errors
+            })
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
 

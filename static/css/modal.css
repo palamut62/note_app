@@ -1,0 +1,82 @@
+/* Modal İçerik Genel */
+.modal-content {
+    background-color: #2a2a3a; /* Arka plan rengi */
+    color: #ffffff; /* Yazı rengi */
+    border-radius: 8px; /* Köşeleri yuvarlat */
+    border: none; /* Çerçeveyi kaldır */
+}
+
+/* Modal Başlık */
+.modal-header {
+    border-bottom: 1px solid #3a3a4f; /* Başlık altı çizgisi */
+}
+
+.modal-title {
+    font-family: 'Inconsolata', monospace; /* Yazı tipi */
+    font-size: 1.5em; /* Yazı boyutu */
+}
+
+/* Kapatma Butonu */
+.btn-close {
+    background-color: #6a4caf; /* Kapatma butonunun arka plan rengi */
+    border-radius: 50%; /* Daire yapmak için */
+    color: #ffffff; /* Yazı rengi */
+    padding: 5px; /* İç dolgu */
+    border: none; /* Çerçeveyi kaldır */
+}
+
+.btn-close:hover {
+    background-color: #7e57c2; /* Hover durumunda arka plan rengi */
+}
+
+/* Modal Gövdesi */
+.modal-body {
+    padding: 20px; /* İç dolgu */
+}
+
+/* Form Elemanları */
+.form-label {
+    color: #ffffff; /* Form etiket yazı rengi */
+}
+
+.form-control {
+    background-color: #3a3a4f; /* Form alanı arka plan rengi */
+    color: #ffffff; /* Form alanı yazı rengi */
+    border: 1px solid #4a4a5f; /* Form alanı çerçeve rengi */
+    border-radius: 5px; /* Form alanı köşe yuvarlatma */
+}
+
+.form-control:focus {
+    background-color: #4a4a5f; /* Odak durumunda arka plan rengi */
+    border-color: #7e57c2; /* Odak durumunda çerçeve rengi */
+    box-shadow: none; /* Varsayılan gölgeyi kaldır */
+}
+
+/* Modal Alt Kısım */
+.modal-footer {
+    border-top: 1px solid #3a3a4f; /* Alt kısım çizgisi */
+}
+
+/* Butonlar */
+.btn-primary, .btn-secondary, .btn-danger {
+    background-color: #7e57c2; /* Buton arka plan rengi */
+    border-color: #7e57c2; /* Buton çerçeve rengi */
+    color: #ffffff; /* Buton yazı rengi */
+    border-radius: 5px; /* Köşe yuvarlatma */
+    padding: 10px 20px; /* İç dolgu */
+}
+
+.btn-primary:hover, .btn-secondary:hover, .btn-danger:hover {
+    background-color: #6a4caf; /* Hover durumunda arka plan rengi */
+    border-color: #6a4caf; /* Hover durumunda çerçeve rengi */
+}
+
+.btn-danger {
+    background-color: #e57373; /* Silme butonu için arka plan rengi */
+    border-color: #e57373; /* Silme butonu için çerçeve rengi */
+}
+
+.btn-danger:hover {
+    background-color: #ef5350; /* Hover durumunda silme butonu arka plan rengi */
+    border-color: #ef5350; /* Hover durumunda silme butonu çerçeve rengi */
+}

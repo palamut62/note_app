@@ -3,27 +3,8 @@
 
 
 {% block extra_css %}
-    <style>
-        .profile-section {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .profile-picture {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%; /* Daire yapmak için */
-            object-fit: cover; /* Resmin tam olarak sığmasını sağlar */
-            border: 2px solid #ccc; /* Daire çerçeve ekler (isteğe bağlı) */
-        }
-
-
-        .profile-section h3 {
-            margin-top: 10px;
-            font-size: 1.2em;
-        }
-    </style>
-
+    <link rel="stylesheet" href="{% static 'css/profil_image.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
 {% endblock %}
 {% block content %}
     <div class="col-md-3 sidebar">
@@ -32,7 +13,7 @@
 
             <div class="profile-section">
                 <label for="profile-picture-input">
-                    <a href="{% url 'update_profile_image' %}">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#updateProfileImageModal">
                         {% if profile_image.profile_image %}
                             <img src="{{ profile_image.profile_image.url }}" alt="Profile Picture"
                                  class="profile-picture"
@@ -165,6 +146,35 @@
             </div>
         </div>
     </div>
+
+<!-- Profil Resmini Güncelleme Modalı -->
+<div id="updateProfileImageModal" class="modal fade" tabindex="-1" aria-labelledby="updateProfileImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateProfileImageModalLabel">Profil Resmini Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="profileImageForm" enctype="multipart/form-data">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_profile_image" class="form-label">Yeni Profil Resmi Seç</label>
+                        <input type="file" class="form-control" id="id_profile_image" name="profile_image" accept="image/*">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
 {% endblock %}
 
 {% block extra_js %}

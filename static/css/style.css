@@ -97,6 +97,33 @@ body {
     color: #7e57c2;
 }
 
+.note-detail-content {
+    padding: 20px;
+}
+
+.note-metadata {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+#noteColor {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+.view-note-details {
+    cursor: pointer;
+    color: #7e57c2;
+    margin-left: 5px;
+}
+
+.view-note-details:hover {
+    color: #6a4caf;
+}
+
 .tag {
     display: inline-block;
     background-color: #4a4a5f;
@@ -151,6 +178,20 @@ body {
 
 .clickable-tag:hover {
     background-color: #6a4caf;
+}
+
+.clickable-category {
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.clickable-category:hover {
+    background-color: #4a4a5f;
+}
+
+#all-categories {
+    font-weight: bold;
+    background-color: #4a4a5f;
 }
 
 @media (max-width: 992px) {

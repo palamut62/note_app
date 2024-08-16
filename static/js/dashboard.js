@@ -156,7 +156,86 @@ $(document).ready(function () {
             }
         });
     });
-    // Tüm Kategoriler butonu
+
+    // Kategori filtreleme
+    $(document).on('click', '.clickable-category', function (e) {
+        // Eğer tıklanan öğe edit veya delete ikonu değilse kategori filtreleme işlemini yap
+        if (!$(e.target).hasClass('edit-category') && !$(e.target).hasClass('delete-category')) {
+            var categoryId = $(this).data('id');
+            var url = categoryId === 'all' ? '/all-notes/' : '/filter-by-category/' + categoryId + '/';
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (response) {
+                    $('.notes-grid').empty();
+
+                    if (response.notes && response.notes.length > 0) {
+                        response.notes.forEach(function (note) {
+                            var noteHtml = `
+                                <div class="note-wrapper">
+                                    <div class="note" style="background-color: ${note.color || '#2a2a3a'};" data-id="${note.id}">
+                                        <div class="note-header">
+                                            ${note.is_active && note.reminder ?
+                                `<i class="fas fa-bell alarm-icon" title="Hatırlatıcı: ${new Date(note.reminder).toLocaleString()}"></i>` :
+                                '<span></span>'}
+                                            <div class="category-badge">${note.category}</div>
+                                        </div>
+                                        <h3 class="note-title">${note.title}</h3>
+                                        <p class="note-content">${note.content}</p>
+                                        <div class="note-footer">
+                                            <small>${new Date(note.created_at).toLocaleDateString()}</small>
+                                            <div class="note-actions">
+                                                <i class="fas fa-edit edit-note" data-id="${note.id}"></i>
+                                                <i class="fas fa-trash delete-note" data-id="${note.id}"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            $('.notes-grid').append(noteHtml);
+                        });
+                    } else {
+                        $('.notes-grid').append('<p>Not bulunamadı.</p>');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Notlar yüklenirken bir hata oluştu:', status, error);
+                }
+            });
+        }
+    });
+
+    $(document).on('click', '.view-note-details', function () {
+        var noteId = $(this).data('id');
+        $.ajax({
+            url: '/note-details/' + noteId + '/',
+            type: 'GET',
+            success: function (response) {
+                $('#noteTitle').text(response.title);
+                $('#noteContent').text(response.content);
+                $('#noteCategory').text(response.category || 'Kategorisiz');
+                $('#noteTags').text(response.tags.join(', ') || 'Etiket yok');
+                $('#noteCreatedAt').text(new Date(response.created_at).toLocaleString());
+                $('#noteUpdatedAt').text(new Date(response.updated_at).toLocaleString());
+
+                if (response.reminder) {
+                    $('#noteReminderContainer').show();
+                    $('#noteReminder').text(new Date(response.reminder).toLocaleString());
+                } else {
+                    $('#noteReminderContainer').hide();
+                }
+
+                $('#noteStatus').text(response.is_active ? 'Aktif' : 'Pasif');
+
+                $('#noteDetailModal').modal('show');
+            },
+            error: function (xhr, status, error) {
+                console.error('Not detayları yüklenirken bir hata oluştu:', status, error);
+            }
+        });
+    });
+// Tüm Kategoriler butonu
     $('#allCategories').click(function () {
         window.location.reload();
     });

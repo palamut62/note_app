@@ -18,6 +18,11 @@
             <div class="sidebar-content">
                 <div class="profile-section">
                     <img src="
+
+
+                            
+                            
+                            
                             
                             
                             {% if profile_image.profile_image %}{{ profile_image.profile_image.url }}{% else %}{% static 'images/default.jpeg' %}{% endif %}"
@@ -28,15 +33,22 @@
 
                 <h5>Kategoriler</h5>
                 <ul id="categoryList">
+                    <li id="all-categories"
+                        class="category-item clickable-category d-flex justify-content-between align-items-center mb-2"
+                        data-id="all">
+                        <span class="category-name">Tümü</span>
+                    </li>
                     {% for category in categories %}
-                        <li class="category-item d-flex justify-content-between align-items-center mb-2"
+                        <li class="category-item clickable-category d-flex justify-content-between align-items-center mb-2"
                             data-id="{{ category.id }}">
-                            {{ category.name }}
-                            <div>
+                            <span class="category-name">{{ category.name }}</span>
+                            <div class="category-actions">
                                 <i class="fas fa-edit edit-category" data-id="{{ category.id }}"></i>
                                 <i class="fas fa-trash delete-category" data-id="{{ category.id }}"></i>
                             </div>
                         </li>
+                    {% empty %}
+                        <li>Henüz kategori yok.</li>
                     {% endfor %}
                 </ul>
                 <button id="addCategory" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">
@@ -99,6 +111,7 @@
                                 <div class="note-actions">
                                     <i class="fas fa-edit edit-note" data-id="{{ note.id }}"></i>
                                     <i class="fas fa-trash delete-note" data-id="{{ note.id }}"></i>
+                                    <i class="fas fa-info-circle view-note-details" data-id="{{ note.id }}"></i>
                                 </div>
                             </div>
                         </div>
@@ -178,6 +191,37 @@
                         <button type="submit" class="btn btn-primary">Güncelle</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <!-- Not Detay Modal -->
+
+    <div class="modal fade" id="noteDetailModal" tabindex="-1" aria-labelledby="noteDetailModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="noteDetailModalLabel">Not Detayları</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="note-detail-content">
+                        <h2 id="noteTitle"></h2>
+                        <p id="noteContent"></p>
+                        <div class="note-metadata">
+                            <p><strong>Kategori:</strong> <span id="noteCategory"></span></p>
+                            <p><strong>Etiketler:</strong> <span id="noteTags"></span></p>
+                            <p><strong>Oluşturulma Tarihi:</strong> <span id="noteCreatedAt"></span></p>
+                            <p><strong>Son Güncelleme:</strong> <span id="noteUpdatedAt"></span></p>
+                            <p id="noteReminderContainer"><strong>Hatırlatıcı:</strong> <span id="noteReminder"></span>
+                            </p>
+                            <p><strong>Durum:</strong> <span id="noteStatus"></span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                </div>
             </div>
         </div>
     </div>

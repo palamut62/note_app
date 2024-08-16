@@ -176,11 +176,24 @@ def filter_notes_by_tag(request, tag_id):
     logger.debug(f"Returning {len(notes_data)} notes")
     return JsonResponse({'notes': notes_data})
 
+
 @login_required
 def filter_notes_by_category(request, category_id):
-    category = get_object_or_404(Category, pk=category_id, user=request.user)
+    category = get_object_or_404(Category, id=category_id, user=request.user)
     notes = Note.objects.filter(user=request.user, category=category)
-    return JsonResponse({'notes': list(notes.values())})
+
+    notes_data = [{
+        'id': note.id,
+        'title': note.title,
+        'content': note.content[:100] + '...' if len(note.content) > 100 else note.content,
+        'color': note.color,
+        'created_at': note.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        'reminder': note.reminder.strftime('%Y-%m-%d %H:%M:%S') if note.reminder else None,
+        'is_active': note.is_active,
+        'category': note.category.name
+    } for note in notes]
+
+    return JsonResponse({'notes': notes_data})
 
 @require_POST
 def add_tag(request):
@@ -226,6 +239,24 @@ def get_all_notes(request):
     } for note in notes]
 
     return JsonResponse({'notes': notes_data})
+
+
+@login_required
+def get_note_details(request, note_id):
+    note = get_object_or_404(Note, id=note_id, user=request.user)
+    note_data = {
+        'id': note.id,
+        'title': note.title,
+        'content': note.content,
+        'color': note.color,
+        'created_at': note.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        'updated_at': note.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+        'reminder': note.reminder.strftime('%Y-%m-%d %H:%M:%S') if note.reminder else None,
+        'is_active': note.is_active,
+        'category': note.category.name if note.category else 'Uncategorized',
+        'tags': [tag.name for tag in note.tags.all()]
+    }
+    return JsonResponse(note_data)
 
 
 

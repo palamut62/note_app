@@ -22,41 +22,43 @@ $(document).ready(function () {
         }
     });
 
-    // Kategori işlemleri
-    $('#addCategory').click(function () {
-        $('#categoryModal').modal('show');
-    });
-
+    // Kategori ekleme
     $('#categoryForm').submit(function (e) {
         e.preventDefault();
-        $.post("/add_category/", $(this).serialize(), function (data) {
-            if (data.id) {
-                $('#categoryList').append(`
-                    <li class="category-item d-flex justify-content-between align-items-center mb-2">
-                        ${data.name}
-                        <div>
-                            <i class="fas fa-edit edit-category" data-id="${data.id}"></i>
-                            <i class="fas fa-trash delete-category" data-id="${data.id}"></i>
-                        </div>
-                    </li>
-                `);
-                $('#categoryModal').modal('hide');
-                $('#categoryForm')[0].reset();
+        $.ajax({
+            url: "/categories/add/",
+            type: "POST",
+            data: $(this).serialize(),
+            success: function (data) {
+                if (data.id) {
+                    $('#categoryList').append(`
+                        <li class="category-item d-flex justify-content-between align-items-center mb-2" data-id="${data.id}">
+                            ${data.name}
+                            <div>
+                                <i class="fas fa-edit edit-category" data-id="${data.id}"></i>
+                                <i class="fas fa-trash delete-category" data-id="${data.id}"></i>
+                            </div>
+                        </li>
+                    `);
+                    $('#categoryModal').modal('hide');
+                    $('#categoryForm')[0].reset();
+                }
+            },
+            error: function (xhr) {
+                alert('Kategori eklenirken bir hata oluştu: ' + xhr.responseJSON.error);
             }
-        }).fail(function (xhr) {
-            alert('Kategori eklenirken bir hata oluştu: ' + xhr.responseJSON.error);
         });
     });
 
     // Not işlemleri
     $('#newNote').click(function () {
-        window.location.href = "/create_note/";
+        window.location.href = "/create/";
     });
 
     // Edit note
     $(document).on('click', '.edit-note', function () {
         let noteId = $(this).data('id');
-        window.location.href = `/edit_note/${noteId}/`;
+        window.location.href = `/notes/edit/${noteId}/`;
     });
 
     // Delete note
@@ -70,7 +72,7 @@ $(document).ready(function () {
     // Edit category
     $(document).on('click', '.edit-category', function () {
         let categoryId = $(this).data('id');
-        let categoryName = $(this).closest('.category-item').find('span').text();
+        let categoryName = $(this).closest('.category-item').text().trim();
         $('#categoryModal h5.modal-title').text('Kategori Düzenle');
         $('#categoryForm input[name="name"]').val(categoryName);
         $('#categoryForm').data('id', categoryId);
@@ -89,7 +91,7 @@ $(document).ready(function () {
     $('#confirmDelete').click(function () {
         let id = $(this).data('id');
         let type = $(this).data('type');
-        let url = type === 'note' ? `/delete_note/${id}/` : `/delete_category/${id}/`;
+        let url = type === 'note' ? `/notes/delete/${id}/` : `/categories/delete/${id}/`;
 
         $.ajax({
             url: url,
@@ -99,10 +101,10 @@ $(document).ready(function () {
                     $(`[data-id="${id}"]`).closest(type === 'note' ? '.note' : '.category-item').remove();
                     $('#deleteConfirmModal').modal('hide');
                 } else {
-                    alert('Silme işlemi başarısız oldu.');
+                    alert('Silme işlemi başarısız oldu: ' + data.error);
                 }
             },
-            error: function () {
+            error: function (xhr) {
                 alert('Bir hata oluştu. Lütfen tekrar deneyin.');
             }
         });
@@ -111,11 +113,11 @@ $(document).ready(function () {
     // Tag filtreleme
     $('.tag').click(function () {
         let tagId = $(this).data('id');
-        $.get(`/filter_notes_by_tag/${tagId}/`, function (data) {
+        $.get(`/filter-by-tag/${tagId}/`, function (data) {
             $('.notes-grid').empty();
             data.notes.forEach(function (note) {
                 $('.notes-grid').append(`
-                    <div class="note" style="background-color: ${note.color || '#ffd700'};">
+                    <div class="note" style="background-color: ${note.color || '#ffd700'};" data-id="${note.id}">
                         <h3>${note.title}</h3>
                         <p>${note.content.length > 100 ? note.content.substring(0, 100) + '...' : note.content}</p>
                         <div class="note-footer">
@@ -136,41 +138,7 @@ $(document).ready(function () {
         window.location.reload();
     });
 
-    // Upcoming tasks için checkbox işlevi
-    $('.upcoming-task input[type="checkbox"]').change(function () {
-        let taskId = $(this).attr('id').split('-')[1];
-        $.post(`/complete_task/${taskId}/`, {
-            completed: this.checked
-        }, function (data) {
-            if (data.success) {
-                // Görev tamamlandığında yapılacak işlemler (örn. görevin stilini değiştirme)
-            }
-        });
-    });
-
-    // Renk seçici için
-    $('input[type="color"]').on('change', function () {
-        $(this).closest('.note').css('background-color', $(this).val());
-    });
-
-    // Hatırlatıcı ekleme/düzenleme için
-    $('input[type="datetime-local"]').on('change', function () {
-        let noteId = $(this).closest('.note').data('id');
-        let reminderTime = $(this).val();
-        $.post(`/set_reminder/${noteId}/`, {
-            reminder: reminderTime
-        }, function (data) {
-            if (data.success) {
-                // Hatırlatıcı ikonunu güncelleme
-                if (reminderTime) {
-                    $(this).closest('.note').find('.reminder-icon').show();
-                } else {
-                    $(this).closest('.note').find('.reminder-icon').hide();
-                }
-            }
-        });
-    });
-
+    // Profil resmi güncelleme
     $('#profileImageForm').submit(function (e) {
         e.preventDefault();
         var formData = new FormData(this);
@@ -185,7 +153,6 @@ $(document).ready(function () {
                 if (response.success) {
                     $('#profile-picture-preview').attr('src', response.image_url);
                     $('#updateProfileImageModal').modal('hide');
-                    alert('Profil resmi başarıyla güncellendi.');
                 } else {
                     alert('Bir hata oluştu: ' + response.error);
                 }
@@ -196,5 +163,3 @@ $(document).ready(function () {
         });
     });
 });
-
-

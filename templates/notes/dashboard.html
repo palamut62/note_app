@@ -1,154 +1,133 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/profil_image.css' %}">
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
 {% endblock %}
 {% block content %}
+<div class="row">
     <div class="col-md-3 sidebar">
-        <!-- Sidebar içeriği -->
         <div class="sidebar-content">
-
             <div class="profile-section">
-                <label for="profile-picture-input">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#updateProfileImageModal">
-                        {% if profile_image.profile_image %}
-                            <img src="{{ profile_image.profile_image.url }}" alt="Profile Picture"
-                                 class="profile-picture"
-                                 id="profile-picture-preview">
-                        {% else %}
-                            <img src="{% static 'images/default.jpeg' %}" alt="Profile Picture"
-                                 class="profile-picture"
-                                 id="profile-picture-preview">
-                        {% endif %}
-                    </a>
-                </label>
+                <img src="{% if profile_image.profile_image %}{{ profile_image.profile_image.url }}{% else %}{% static 'images/default.jpeg' %}{% endif %}" 
+                     id="profile-picture-preview" class="profile-picture" data-bs-toggle="modal" data-bs-target="#updateProfileImageModal">
                 <h3>{{ user.username }}</h3>
             </div>
 
-
             <h5>Kategoriler</h5>
-            <ul class="list-unstyled" id="categoryList">
+            <ul id="categoryList">
                 {% for category in categories %}
-                    <li class="d-flex justify-content-between align-items-center mb-2">
-                        {{ category.name }}
-                        <div>
-                            <i class="fas fa-edit edit-category" data-id="{{ category.id }}"></i>
-                            <i class="fas fa-trash delete-category" data-id="{{ category.id }}"></i>
-
-                        </div>
-                    </li>
+                <li class="category-item d-flex justify-content-between align-items-center mb-2" data-id="{{ category.id }}">
+                    {{ category.name }}
+                    <div>
+                        <i class="fas fa-edit edit-category" data-id="{{ category.id }}"></i>
+                        <i class="fas fa-trash delete-category" data-id="{{ category.id }}"></i>
+                    </div>
+                </li>
                 {% endfor %}
             </ul>
-            <button id="addCategory" class="btn btn-success mb-3 w-100">Kategori Ekle</button>
+            <button id="addCategory" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">Kategori Ekle</button>
 
             <h5>Aktif Hatırlatıcılar</h5>
-            <ul class="list-unstyled" id="activeReminders">
+            <ul>
                 {% for note in active_reminders %}
-                    <li class="mb-2">
-                        <input type="checkbox" id="reminder-{{ note.id }}">
-                        <label for="reminder-{{ note.id }}">
-                            {{ note.title }}
-                            <small class="text-muted d-block">{{ note.reminder|date:"d/m/Y H:i" }}</small>
-                        </label>
-                    </li>
+                <li>{{ note.title }} <small>{{ note.reminder|date:"d/m/Y H:i" }}</small></li>
                 {% empty %}
-                    <li>Aktif hatırlatıcı yok</li>
+                <li>Aktif hatırlatıcı yok</li>
                 {% endfor %}
             </ul>
 
             <h5>Etiketler</h5>
             <div class="tag-cloud">
                 {% for tag in tags %}
-                    <span class="tag" data-id="{{ tag.id }}">#{{ tag.name }}</span>
+                <span class="tag" data-id="{{ tag.id }}">#{{ tag.name }}</span>
                 {% endfor %}
             </div>
         </div>
     </div>
 
     <div class="col-md-9 main-content">
-        <!-- Butonları burada sağ üst köşede göstereceğiz -->
         <div class="d-flex justify-content-end mb-3">
-            <a class="btn btn-primary me-2" href="{% url 'dashboard' %}">Ana Sayfa</a>
-            <a class="btn btn-primary me-2" href="{% url 'create_note' %}">Yeni Not</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary me-2">Ana Sayfa</a>
+            <a href="{% url 'create_note' %}" class="btn btn-primary me-2">Yeni Not</a>
             <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="userMenuButton"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                     {{ user.username }}
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item" href="{% url 'logout' %}">Çıkış Yap</a></li>
                 </ul>
             </div>
         </div>
 
-        <!-- Notların listelendiği alan -->
         <h4>Notlar</h4>
         <div class="notes-grid">
             {% for note in notes %}
-                <div class="note" style="background-color: {{ note.color|default:'#ffd700' }};" data-id="{{ note.id }}">
-                    <h3>{{ note.title }}</h3>
-                    <p>{{ note.content|truncatechars:100 }}</p>
-                    <div class="note-footer">
-                        <small>{{ note.created_at|date:"M d, Y" }}</small>
-                        <div class="note-actions">
-                            <i class="fas fa-edit edit-note" data-id="{{ note.id }}"></i>
-                            <i class="fas fa-trash delete-note" data-id="{{ note.id }}"></i>
-                        </div>
+            <div class="note" style="background-color: {{ note.color|default:'#ffd700' }};" data-id="{{ note.id }}">
+                <h3>{{ note.title }}</h3>
+                <p>{{ note.content|truncatechars:100 }}</p>
+                <div class="note-footer">
+                    <small>{{ note.created_at|date:"M d, Y" }}</small>
+                    <div class="note-actions">
+                        <i class="fas fa-edit edit-note" data-id="{{ note.id }}"></i>
+                        <i class="fas fa-trash delete-note" data-id="{{ note.id }}"></i>
                     </div>
                 </div>
+            </div>
             {% empty %}
-                <p>Henüz not yok. Yeni bir not oluşturun!</p>
+            <p>Henüz not yok. Yeni bir not oluşturun!</p>
             {% endfor %}
         </div>
     </div>
+</div>
 
-    <!-- Kategori Ekleme Modalı -->
-    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="categoryModalLabel">Yeni Kategori Ekle</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="categoryForm">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="categoryName" class="form-label">Kategori Adı</label>
-                            <input type="text" class="form-control" id="categoryName" name="name" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Ekle</button>
-                    </form>
-                </div>
+<!-- Kategori Modal -->
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="categoryModalLabel">Yeni Kategori Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </div>
-    </div>
-
-    <!-- Silme Onay Modalı -->
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteConfirmModalLabel">Silme İşlemini Onayla</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+            <form id="categoryForm">
                 <div class="modal-body">
-                    Bu öğeyi silmek istediğinizden emin misiniz?
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Kategori Adı</label>
+                        <input type="text" class="form-control" id="categoryName" name="name" required>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button type="button" class="btn btn-danger" id="confirmDelete">Sil</button>
+                    <button type="submit" class="btn btn-primary">Ekle</button>
                 </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Silme Onay Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Silme İşlemini Onayla</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bu öğeyi silmek istediğinizden emin misiniz?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Sil</button>
             </div>
         </div>
     </div>
+</div>
 
-<!-- Profil Resmini Güncelleme Modalı -->
-<div id="updateProfileImageModal" class="modal fade" tabindex="-1" aria-labelledby="updateProfileImageModalLabel" aria-hidden="true">
+<!-- Profil Resmi Güncelleme Modal -->
+<div class="modal fade" id="updateProfileImageModal" tabindex="-1" aria-labelledby="updateProfileImageModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -171,12 +150,8 @@
         </div>
     </div>
 </div>
-
-
-
-
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'js/dashboard.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}

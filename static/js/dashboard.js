@@ -22,6 +22,7 @@ $(document).ready(function () {
         }
     });
 
+
     // Kategori ekleme
     $('#categoryForm').submit(function (e) {
         e.preventDefault();
@@ -162,4 +163,45 @@ $(document).ready(function () {
             }
         });
     });
+
+    function checkReminders() {
+        console.log("checkReminders fonksiyonu çağrıldı.");
+        $.ajax({
+            url: '/check-reminders/',
+            type: 'GET',
+            success: function (response) {
+                console.log("AJAX çağrısı başarılı. Yanıt:", response);
+                if (response.reminders && response.reminders.length > 0) {
+                    var message = "Hatırlatıcılar: " + response.reminders.map(r => r.title).join(', ');
+                    console.log("Oluşturulan mesaj:", message);
+                    $('#reminderMessage').text(message);
+                    $('#reminderAlert').fadeIn().delay(10000).fadeOut();
+                    console.log("reminderAlert gösterildi.");
+
+                    // Deaktif olan notların alarm ikonlarını kaldır
+                    response.reminders.forEach(function (reminder) {
+                        $(`.note[data-id="${reminder.id}"] .alarm-icon`).remove();
+                        console.log(`Alarm ikonu kaldırıldı: ${reminder.id}`);
+                    });
+
+                    // Aktif hatırlatıcılar listesinden kaldır
+                    response.reminders.forEach(function (reminder) {
+                        $(`#activeReminders li[data-id="${reminder.id}"]`).remove();
+                        console.log(`Hatırlatıcı kaldırıldı: ${reminder.id}`);
+                    });
+
+                    // Eğer liste boşsa, "Aktif hatırlatıcı yok" mesajını göster
+                    if ($('#activeReminders li').length === 0) {
+                        $('#activeReminders').html('<li>Aktif hatırlatıcı yok</li>');
+                        console.log("Aktif hatırlatıcı kalmadı mesajı eklendi.");
+                    }
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Hatırlatıcılar kontrol edilirken bir hata oluştu:', status, error);
+                console.log('XHR yanıtı:', xhr.responseText);
+            }
+        });
+    }
+
 });

@@ -25,6 +25,19 @@ class Note(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     reminder = models.DateTimeField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if self.reminder:
+            if self.reminder <= timezone.now():
+                self.is_active = False
+                self.reminder = None
+            else:
+                self.is_active = True
+        else:
+            self.is_active = False
+        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return self.title

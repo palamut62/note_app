@@ -1,41 +1,97 @@
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
-from .models import Note, Category, Tag
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+
+from .models import Note, Category, Tag, Profile
 from .forms import NoteForm, ProfileImageForm
-from .models import Profile
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+@login_required
+def check_reminders(request):
+    current_time = timezone.now()
+    due_reminders = Note.objects.filter(
+        user=request.user,
+        reminder__isnull=False,
+        reminder__lte=current_time,
+        is_active=True
+    )
+
+    reminders = []
+    for note in due_reminders:
+        reminders.append({'id': note.id, 'title': note.title})
+        note.is_active = False
+        note.reminder = None
+        note.save()  # Bu, modeldeki save metodunu çağıracak
+
+    return JsonResponse({'reminders': reminders})
+
 
 @login_required
 def dashboard(request):
-    notes = Note.objects.filter(user=request.user)
-    profile_image = Profile.objects.filter(user=request.user).first()  # İlk profili al
+    current_time = timezone.now()
+
+    # Geçmiş hatırlatıcıları güncelle
+    past_reminders = Note.objects.filter(
+        user=request.user,
+        reminder__isnull=False,
+        reminder__lte=current_time,
+        is_active=True
+    )
+    for note in past_reminders:
+        note.is_active = False
+        note.reminder = None
+        note.save()
+
+    notes = Note.objects.filter(user=request.user).select_related('category').prefetch_related('tags')
+    profile_image = Profile.objects.filter(user=request.user).first()
     categories = Category.objects.filter(user=request.user)
     tags = Tag.objects.filter(user=request.user)
-    active_reminders = Note.objects.filter(user=request.user, reminder__gt=timezone.now()).order_by('reminder')[:5]
-    return render(request, 'notes/dashboard.html', {
+
+    active_reminders = Note.objects.filter(
+        user=request.user,
+        reminder__isnull=False,
+        reminder__gt=current_time,
+        is_active=True
+    ).order_by('reminder')
+
+    context = {
         'notes': notes,
         'categories': categories,
         'tags': tags,
         'active_reminders': active_reminders,
-        'profile_image':profile_image
-    })
+        'profile_image': profile_image
+    }
+    return render(request, 'notes/dashboard.html', context)
+
+
+
+
 
 @login_required
 def create_note(request):
     if request.method == 'POST':
         form = NoteForm(request.POST, user=request.user)
         if form.is_valid():
-            note = form.save()
+            note = form.save(commit=False)
+            reminder = form.cleaned_data.get('reminder')
+            if reminder and reminder <= timezone.now():
+                messages.error(request, 'Hatırlatıcı tarihi geçmiş bir tarih olamaz.')
+                return render(request, 'notes/note_form.html', {'form': form, 'action': 'Create'})
+            note.user = request.user
+            note.save()
+            form.save_m2m()  # Save many-to-many fields
             messages.success(request, 'Not başarıyla oluşturuldu!')
             return redirect('dashboard')
-        else:
-            messages.error(request, 'Lütfen formdaki hataları düzeltin.')
     else:
         form = NoteForm(user=request.user)
     return render(request, 'notes/note_form.html', {'form': form, 'action': 'Create'})
+
 
 @login_required
 def edit_note(request, pk):
@@ -126,6 +182,9 @@ def update_profile_image(request):
                 'error': form.errors
             })
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+
 
 
 

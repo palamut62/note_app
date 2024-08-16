@@ -1,6 +1,6 @@
 from django import forms
 from django.utils import timezone
-from .models import Note, Tag
+from .models import Note, Tag, Profile
 
 
 class NoteForm(forms.ModelForm):
@@ -43,8 +43,10 @@ class NoteForm(forms.ModelForm):
 
         if reminder_active and not reminder:
             self.add_error('reminder', "Hatırlatıcı etkinleştirildiğinde bir tarih seçmelisiniz.")
-        elif reminder_active and reminder and reminder < timezone.now():
-            self.add_error('reminder', "Hatırlatıcı geçmiş bir tarih olamaz.")
+        elif reminder_active and reminder:
+            current_time = timezone.now()
+            if reminder <= current_time:
+                self.add_error('reminder', "Hatırlatıcı şu anki zamandan ileri bir tarih olmalıdır.")
 
         if created_at and created_at > timezone.now():
             self.add_error('created_at', "Oluşturma tarihi gelecekte bir tarih olamaz.")
@@ -58,11 +60,12 @@ class NoteForm(forms.ModelForm):
 
         if not self.cleaned_data.get('reminder_active'):
             instance.reminder = None
+        else:
+            instance.reminder = self.cleaned_data.get('reminder')
 
         if commit:
             instance.save()
 
-            # Tags'i kaydetme işlemini buraya taşıdık
             if 'tags' in self.cleaned_data:
                 instance.tags.clear()
                 tag_names = [t.strip() for t in self.cleaned_data['tags'].split(',') if t.strip()]
@@ -72,9 +75,7 @@ class NoteForm(forms.ModelForm):
 
         return instance
 
-from django import forms
-from .models import Profile
-
+# ProfileImageForm remains unchanged
 class ProfileImageForm(forms.ModelForm):
     class Meta:
         model = Profile

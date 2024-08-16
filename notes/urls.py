@@ -12,5 +12,6 @@ urlpatterns = [
     path('filter-by-category/<int:category_id>/', views.filter_notes_by_category, name='filter_notes_by_category'),
     path('add-tag/', views.add_tag, name='add_tag'),
     path('update-profile-image/', views.update_profile_image, name='update_profile_image'),
+    path('check-reminders/', views.check_reminders, name='check_reminders'),
 
 ]

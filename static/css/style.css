@@ -29,6 +29,15 @@ body {
     margin-bottom: 15px;
 }
 
+
+.alarm-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #007bff; /* Mavi renk, isteğe bağlı olarak değiştirilebilir */
+    font-size: 1.2em;
+}
+
 .note h3 {
     margin-top: 0;
     font-size: 1.2em;
@@ -88,6 +97,7 @@ body {
         width: 100%;
     }
 }
+
 .sidebar {
     background-color: #2a2a3a; /* Side bar için arka plan rengi */
     height: 100vh; /* Tam sayfa yüksekliği */
@@ -101,6 +111,19 @@ body {
     padding: 20px;
 }
 
+#reminderAlert {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    text-align: center;
+    padding: 10px;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
 
 
 

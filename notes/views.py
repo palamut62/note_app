@@ -5,6 +5,11 @@ from django.utils import timezone
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from django.db.models import Count
+from .models import Note, Category, Tag, Profile
 from .models import Note, Category, Tag, Profile
 from .forms import NoteForm, ProfileImageForm
 import logging
@@ -32,6 +37,8 @@ def check_reminders(request):
     return JsonResponse({'reminders': reminders})
 
 
+
+
 @login_required
 def dashboard(request):
     current_time = timezone.now()
@@ -51,7 +58,11 @@ def dashboard(request):
     notes = Note.objects.filter(user=request.user).select_related('category').prefetch_related('tags')
     profile_image = Profile.objects.filter(user=request.user).first()
     categories = Category.objects.filter(user=request.user)
-    tags = Tag.objects.filter(user=request.user)
+
+    # Sadece notlara kayıtlı olan benzersiz etiketleri çek
+    tags = Tag.objects.filter(note__user=request.user).annotate(
+        num_notes=Count('note')
+    ).filter(num_notes__gt=0).distinct()
 
     active_reminders = Note.objects.filter(
         user=request.user,
@@ -69,25 +80,21 @@ def dashboard(request):
     }
     return render(request, 'notes/dashboard.html', context)
 
-
-
-
-
 @login_required
 def create_note(request):
     if request.method == 'POST':
+        logger.debug(f"POST data: {request.POST}")
         form = NoteForm(request.POST, user=request.user)
         if form.is_valid():
+            logger.debug(f"Form is valid. Cleaned data: {form.cleaned_data}")
             note = form.save(commit=False)
-            reminder = form.cleaned_data.get('reminder')
-            if reminder and reminder <= timezone.now():
-                messages.error(request, 'Hatırlatıcı tarihi geçmiş bir tarih olamaz.')
-                return render(request, 'notes/note_form.html', {'form': form, 'action': 'Create'})
             note.user = request.user
             note.save()
-            form.save_m2m()  # Save many-to-many fields
+            form.save_m2m()
             messages.success(request, 'Not başarıyla oluşturuldu!')
             return redirect('dashboard')
+        else:
+            logger.error(f"Form is invalid. Errors: {form.errors}")
     else:
         form = NoteForm(user=request.user)
     return render(request, 'notes/note_form.html', {'form': form, 'action': 'Create'})
@@ -143,11 +150,31 @@ def delete_category(request, pk):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
+
 @login_required
 def filter_notes_by_tag(request, tag_id):
-    tag = get_object_or_404(Tag, pk=tag_id, user=request.user)
-    notes = Note.objects.filter(user=request.user, tags=tag)
-    return JsonResponse({'notes': list(notes.values())})
+    logger.debug(f"Filtering notes for tag_id: {tag_id}")
+    tag = get_object_or_404(Tag, id=tag_id)
+    logger.debug(f"Tag found: {tag.name}")
+
+    notes = Note.objects.filter(user=request.user, tags=tag).distinct()
+    logger.debug(f"Number of notes found: {notes.count()}")
+
+    notes_data = []
+    for note in notes:
+        logger.debug(f"Processing note: {note.id} - {note.title}")
+        notes_data.append({
+            'id': note.id,
+            'title': note.title,
+            'content': note.content[:100] + '...' if len(note.content) > 100 else note.content,
+            'color': note.color,
+            'created_at': note.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'reminder': note.reminder.strftime('%Y-%m-%d %H:%M:%S') if note.reminder else None,
+            'is_active': note.is_active,
+        })
+
+    logger.debug(f"Returning {len(notes_data)} notes")
+    return JsonResponse({'notes': notes_data})
 
 @login_required
 def filter_notes_by_category(request, category_id):
@@ -182,6 +209,23 @@ def update_profile_image(request):
                 'error': form.errors
             })
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+@login_required
+def get_all_notes(request):
+    notes = Note.objects.filter(user=request.user)
+    notes_data = [{
+        'id': note.id,
+        'title': note.title,
+        'content': note.content[:100] + '...' if len(note.content) > 100 else note.content,
+        'color': note.color,
+        'created_at': note.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        'reminder': note.reminder.strftime('%Y-%m-%d %H:%M:%S') if note.reminder else None,
+        'is_active': note.is_active,
+        'category': note.category.name if note.category else 'Uncategorized'
+    } for note in notes]
+
+    return JsonResponse({'notes': notes_data})
 
 
 

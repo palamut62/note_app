@@ -1,18 +1,20 @@
- .profile-section {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+.profile-section {
+    text-align: center;
+    margin-bottom: 20px;
 
-        .profile-picture {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%; /* Daire yapmak için */
-            object-fit: cover; /* Resmin tam olarak sığmasını sağlar */
-            border: 2px solid #ccc; /* Daire çerçeve ekler (isteğe bağlı) */
-        }
+}
 
+.profile-picture {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%; /* Daire yapmak için */
+    object-fit: cover; /* Resmin tam olarak sığmasını sağlar */
+    border: 2px solid #ccc; /* Daire çerçeve ekler (isteğe bağlı) */
+    cursor: pointer;
 
-        .profile-section h3 {
-            margin-top: 10px;
-            font-size: 1.2em;
-        }
+}
+
+.profile-section h3 {
+    margin-top: 10px;
+    font-size: 1.2em;
+}

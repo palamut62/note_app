@@ -17,7 +17,10 @@
         <div class="col-md-3 sidebar">
             <div class="sidebar-content">
                 <div class="profile-section">
-                    <img src="{% if profile_image.profile_image %}{{ profile_image.profile_image.url }}{% else %}{% static 'images/default.jpeg' %}{% endif %}"
+                    <img src="
+                            
+                            
+                            {% if profile_image.profile_image %}{{ profile_image.profile_image.url }}{% else %}{% static 'images/default.jpeg' %}{% endif %}"
                          id="profile-picture-preview" class="profile-picture" data-bs-toggle="modal"
                          data-bs-target="#updateProfileImageModal">
                     <h3>{{ user.username }}</h3>
@@ -53,8 +56,9 @@
 
                 <h5>Etiketler</h5>
                 <div class="tag-cloud">
+                    <span class="tag clickable-tag all-tag" data-id="all">#All</span>
                     {% for tag in tags %}
-                        <span class="tag" data-id="{{ tag.id }}">#{{ tag.name }}</span>
+                        <span class="tag clickable-tag" data-id="{{ tag.id }}">#{{ tag.name }}</span>
                     {% endfor %}
                 </div>
             </div>
@@ -78,23 +82,30 @@
             <h4>Notlar</h4>
             <div class="notes-grid">
                 {% for note in notes %}
-<div class="note" style="background-color: {{ note.color|default:'#ffd700' }};" data-id="{{ note.id }}">
-    {% if note.reminder and note.is_active %}
-        <i class="fas fa-bell alarm-icon" title="Hatırlatıcı: {{ note.reminder|date:'d/m/Y H:i' }}"></i>
-    {% endif %}
-    <h3>{{ note.title }}</h3>
-    <p>{{ note.content|truncatechars:100 }}</p>
-    <div class="note-footer">
-        <small>{{ note.created_at|date:"M d, Y" }}</small>
-        <div class="note-actions">
-            <i class="fas fa-edit edit-note" data-id="{{ note.id }}"></i>
-            <i class="fas fa-trash delete-note" data-id="{{ note.id }}"></i>
-        </div>
-    </div>
-</div>
-{% empty %}
-<p>Henüz not yok. Yeni bir not oluşturun!</p>
-{% endfor %}
+                    <div class="note-wrapper">
+                        <div class="note" style="background-color: {{ note.color|default:'#ffd700' }};"
+                             data-id="{{ note.id }}">
+                            <div class="note-header">
+                                {% if note.reminder and note.is_active %}
+                                    <i class="fas fa-bell alarm-icon"
+                                       title="Hatırlatıcı: {{ note.reminder|date:'d/m/Y H:i' }}"></i>
+                                {% endif %}
+                                <div class="category-badge">{{ note.category.name|default:"Uncategorized" }}</div>
+                            </div>
+                            <h3 class="note-title">{{ note.title }}</h3>
+                            <p class="note-content">{{ note.content|truncatechars:100 }}</p>
+                            <div class="note-footer">
+                                <small>{{ note.created_at|date:"M d, Y" }}</small>
+                                <div class="note-actions">
+                                    <i class="fas fa-edit edit-note" data-id="{{ note.id }}"></i>
+                                    <i class="fas fa-trash delete-note" data-id="{{ note.id }}"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>Henüz not yok. Yeni bir not oluşturun!</p>
+                {% endfor %}
             </div>
         </div>
     </div>

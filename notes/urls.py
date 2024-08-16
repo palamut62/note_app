@@ -13,5 +13,7 @@ urlpatterns = [
     path('add-tag/', views.add_tag, name='add_tag'),
     path('update-profile-image/', views.update_profile_image, name='update_profile_image'),
     path('check-reminders/', views.check_reminders, name='check_reminders'),
+    path('filter-by-tag/<int:tag_id>/', views.filter_notes_by_tag, name='filter_notes_by_tag'),
+    path('all-notes/', views.get_all_notes, name='get_all_notes'),
 
 ]

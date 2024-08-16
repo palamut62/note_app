@@ -111,29 +111,51 @@ $(document).ready(function () {
         });
     });
 
-    // Tag filtreleme
-    $('.tag').click(function () {
-        let tagId = $(this).data('id');
-        $.get(`/filter-by-tag/${tagId}/`, function (data) {
-            $('.notes-grid').empty();
-            data.notes.forEach(function (note) {
-                $('.notes-grid').append(`
-                    <div class="note" style="background-color: ${note.color || '#ffd700'};" data-id="${note.id}">
-                        <h3>${note.title}</h3>
-                        <p>${note.content.length > 100 ? note.content.substring(0, 100) + '...' : note.content}</p>
-                        <div class="note-footer">
-                            <small>${new Date(note.created_at).toLocaleDateString()}</small>
-                            <div class="note-actions">
-                                <i class="fas fa-edit edit-note" data-id="${note.id}"></i>
-                                <i class="fas fa-trash delete-note" data-id="${note.id}"></i>
+    // Etiket filtreleme
+    $(document).on('click', '.clickable-tag', function () {
+        var tagId = $(this).data('id');
+        var url = tagId === 'all' ? '/all-notes/' : '/filter-by-tag/' + tagId + '/';
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (response) {
+                $('.notes-grid').empty();
+
+                if (response.notes && response.notes.length > 0) {
+                    response.notes.forEach(function (note) {
+                        var noteHtml = `
+                            <div class="note-wrapper">
+                                <div class="note" style="background-color: ${note.color || '#2a2a3a'};" data-id="${note.id}">
+                                    <div class="note-header">
+                                        ${note.is_active && note.reminder ?
+                            `<i class="fas fa-bell alarm-icon" title="Hatırlatıcı: ${new Date(note.reminder).toLocaleString()}"></i>` :
+                            '<span></span>'}
+                                        <div class="category-badge">${note.category}</div>
+                                    </div>
+                                    <h3 class="note-title">${note.title}</h3>
+                                    <p class="note-content">${note.content}</p>
+                                    <div class="note-footer">
+                                        <small>${new Date(note.created_at).toLocaleDateString()}</small>
+                                        <div class="note-actions">
+                                            <i class="fas fa-edit edit-note" data-id="${note.id}"></i>
+                                            <i class="fas fa-trash delete-note" data-id="${note.id}"></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                `);
-            });
+                        `;
+                        $('.notes-grid').append(noteHtml);
+                    });
+                } else {
+                    $('.notes-grid').append('<p>Not bulunamadı.</p>');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Notlar yüklenirken bir hata oluştu:', status, error);
+            }
         });
     });
-
     // Tüm Kategoriler butonu
     $('#allCategories').click(function () {
         window.location.reload();

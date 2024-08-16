@@ -11,7 +11,7 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('dashboard')  # Assuming you have a 'home' view
+            return redirect('index')  # Assuming you have a 'home' view
         else:
             messages.error(request, 'Invalid username or password')
     return render(request, 'registration/login.html')
@@ -32,7 +32,7 @@ def register(request):
 
 def user_logout(request):
     logout(request)
-    return redirect('dashboard')
+    return redirect('index')
 
 
 from django.shortcuts import render

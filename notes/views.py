@@ -259,8 +259,5 @@ def get_note_details(request, note_id):
     return JsonResponse(note_data)
 
 
-
-
-
-
-
+def index(request):
+    return render(request, 'index.html')

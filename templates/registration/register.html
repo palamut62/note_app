@@ -2,30 +2,67 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/registration.css' %}">
+    <link rel="stylesheet" href="{% static 'css/registration.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    <div class="auth-form">
-        <h2>Kayıt Ol</h2>
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <input type="text" id="username" name="username" placeholder="Kullanıcı Adı" required>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}">Not Uygulaması</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Hakkımızda</a>
+                    </li>
+                    <!-- Kullanıcı login olduysa gösterilecek butonlar -->
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
+                    {% else %}
+                        <!-- Kullanıcı login olmadıysa gösterilecek butonlar -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">İletişim</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
-            <div class="form-group">
-                <input type="email" id="email" name="email" placeholder="E-posta" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="password1" name="password1" placeholder="Şifre" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="password2" name="password2" placeholder="Şifreyi Onayla" required>
-            </div>
-            <button type="submit" class="btn-primary">Kayıt Ol</button>
-        </form>
-        <p class="auth-link">Zaten bir hesabınız var mı? <a href="{% url 'login' %}">Giriş yapın</a></p>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-form">
+            <h2>Kayıt Ol</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" id="username" name="username" placeholder="Kullanıcı Adı" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" placeholder="E-posta" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password1" name="password1" placeholder="Şifre" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password2" name="password2" placeholder="Şifreyi Onayla" required>
+                </div>
+                <button type="submit" class="btn-primary">Kayıt Ol</button>
+            </form>
+            <p class="auth-link">Zaten bir hesabınız var mı? <a href="{% url 'login' %}">Giriş yapın</a></p>
+        </div>
     </div>
-</div>
 {% endblock %}

@@ -140,6 +140,8 @@ $(document).ready(function () {
                                         <div class="note-actions">
                                             <i class="fas fa-edit edit-note" data-id="${note.id}"></i>
                                             <i class="fas fa-trash delete-note" data-id="${note.id}"></i>
+                                            <i class="fas fa-info-circle view-note-details" data-id="${note.id}"></i>
+
                                         </div>
                                     </div>
                                 </div>
@@ -188,6 +190,8 @@ $(document).ready(function () {
                                             <div class="note-actions">
                                                 <i class="fas fa-edit edit-note" data-id="${note.id}"></i>
                                                 <i class="fas fa-trash delete-note" data-id="${note.id}"></i>
+                                                <i class="fas fa-info-circle view-note-details" data-id="${note.id}"></i>
+
                                             </div>
                                         </div>
                                     </div>

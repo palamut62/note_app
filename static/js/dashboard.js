@@ -305,4 +305,58 @@ $(document).ready(function () {
         });
     }
 
+    function adjustNoteColors() {
+        document.querySelectorAll('.note').forEach(note => {
+            const backgroundColor = note.dataset.color;
+            const textColor = isLightColor(backgroundColor) ? '#000000' : '#ffffff';
+
+            note.style.color = textColor;
+
+            // İkonlar için rengi ayarla
+            const icons = note.querySelectorAll('.note-actions i');
+            icons.forEach(icon => icon.style.color = textColor);
+        });
+    }
+
+    function isLightColor(color) {
+        const hex = color.replace('#', '');
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+        const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+        return brightness > 128; // 128 orta değerdir, gerekirse ayarlayabilirsiniz
+    }
+
+// Sayfa yüklendiğinde ve her not eklendiğinde/güncellendiğinde çağırın
+    document.addEventListener('DOMContentLoaded', adjustNoteColors);
+
+// Notlar güncellendiğinde de çağırın (örneğin AJAX ile yeni notlar yüklendiğinde)
+
+
+    function adjustIconColors() {
+        document.querySelectorAll('.note').forEach(note => {
+            const backgroundColor = note.dataset.color;
+            const icons = note.querySelectorAll('.note-actions i');
+
+            if (isLightColor(backgroundColor)) {
+                icons.forEach(icon => icon.style.color = '#333333'); // Koyu renk
+            } else {
+                icons.forEach(icon => icon.style.color = '#ffffff'); // Açık renk
+            }
+        });
+    }
+
+    function isLightColor(color) {
+        const hex = color.replace('#', '');
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+        const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+        return brightness > 155; // 155 eşik değeri, gerekirse ayarlayabilirsiniz
+    }
+
+// Sayfa yüklendiğinde ve her not eklendiğinde/güncellendiğinde çağırın
+    document.addEventListener('DOMContentLoaded', adjustIconColors);
+// Notlar güncellendiğinde de çağırın (örneğin AJAX ile yeni notlar yüklendiğinde)
+
 });

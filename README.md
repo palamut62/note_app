@@ -63,5 +63,5 @@ Bu proje için henüz belirli bir lisans belirlenmemiştir. Tüm hakları saklı
 
 ## İletişim
 
-Proje Sahibi: [Your Name]
+Proje Sahibi: [Umut ÇELİK]
 Proje Linki: [https://github.com/your-username/not-uygulamasi](https://github.com/your-username/not-uygulamasi)

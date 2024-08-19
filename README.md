@@ -2,6 +2,16 @@
 
 Not Uygulaması, Django ile geliştirilmiş kapsamlı bir not tutma ve yönetme web uygulamasıdır. Kullanıcılar notlarını organize edebilir, kategorize edebilir, etiketleyebilir ve hatırlatıcılar ayarlayabilir.
 
+## Ekran Görüntüleri
+
+### Ana Sayfa
+![Ana Sayfa](screenshots/index.png)
+*Not Uygulamasının ana sayfası*
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+*Kullanıcı dashboard'u ve not yönetimi arayüzü*
+
 ## Özellikler
 
 - **Kullanıcı Yönetimi**: Kayıt olma, giriş yapma ve çıkış yapma işlemleri.

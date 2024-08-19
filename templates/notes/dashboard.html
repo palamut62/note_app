@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/profil_image.css' %}">
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
 {% endblock %}
@@ -17,7 +18,8 @@
         <div class="col-md-3 sidebar">
             <div class="sidebar-content">
                 <div class="profile-section mb-4">
-                    <img src="{% if profile_image.profile_image %}{{ profile_image.profile_image.url }}{% else %}{% static 'images/default.jpeg' %}{% endif %}"
+                    <img src="
+                            {% if profile_image.profile_image %}{{ profile_image.profile_image.url }}{% else %}{% static 'images/default.jpeg' %}{% endif %}"
                          id="profile-picture-preview" class="profile-picture" data-bs-toggle="modal"
                          data-bs-target="#updateProfileImageModal">
                     <h3 class="mt-2">{{ user.username }}</h3>
@@ -189,7 +191,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Not Detay Modal -->
     <div class="modal fade" id="noteDetailModal" tabindex="-1" aria-labelledby="noteDetailModalLabel"
          aria-hidden="true">

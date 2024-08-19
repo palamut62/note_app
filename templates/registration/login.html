@@ -1,61 +1,60 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block extra_head %}
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/registration.css' %}">
+                <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/registration.css' %}">
 {% endblock %}
 
 {% block content %}
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'index' %}">Not Uygulaması</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Ana Sayfa</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Hakkımızda</a>
-                    </li>
-                    <!-- Kullanıcı login olduysa gösterilecek butonlar -->
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                        </li>
-                    {% else %}
-                        <!-- Kullanıcı login olmadıysa gösterilecek butonlar -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">İletişim</a>
-                        </li>
-                    {% endif %}
+    <header class="border-b border-gray-800">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-8 h-8">
+                <h1 class="text-2xl font-bold text-green-400">Not Uygulaması</h1>
+            </div>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="{% url 'index' %}" class="hover:text-green-400">Anasayfa</a></li>
+                    <li><a href="{% url 'login' %}" class="hover:text-green-400">Login</a></li>
+
                 </ul>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <i data-lucide="moon"></i>
+                <i data-lucide="message-circle"></i>
+                <i data-lucide="twitter"></i>
+                <i data-lucide="github"></i>
             </div>
         </div>
-    </nav>
-
-<div class="auth-container">
-    <div class="auth-form">
-        <h2>Giriş Yap</h2>
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <input type="text" id="username" name="username" placeholder="Kullanıcı Adı" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="password" name="password" placeholder="Şifre" required>
-            </div>
-            <button type="submit" class="btn-primary">Giriş Yap</button>
-        </form>
-        <p class="auth-link">Hesabınız yok mu? <a href="{% url 'register' %}">Kayıt olun</a></p>
+    </header>
+    <div class="auth-container">
+        <div class="auth-form">
+            <h2>Giriş Yap</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" id="username" name="username" placeholder="Kullanıcı Adı" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" name="password" placeholder="Şifre" required>
+                </div>
+                <button type="submit" class="btn-primary">Giriş Yap</button>
+            </form>
+            <p class="auth-link">Hesabınız yok mu? <a href="{% url 'register' %}">Kayıt olun</a></p>
+        </div>
     </div>
-</div>
+    <div class="text-center text-gray-400">
+        <p>Released under the MIT License.</p>
+        <p>© 2024 Not Uygulaması. Tüm Hakları Saklıdır.</p>
+    </div>
+    <script>
+        lucide.createIcons();
+    </script>
 {% endblock %}

@@ -1,131 +1,133 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block extra_head %}
 
-{% block title %}Ana Sayfa - Not Uygulaması{% endblock %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+{% endblock %}
+
+{% block extra_css%}
+                <link rel="stylesheet" href="{% static 'css/index.css' %}">
+
+    {% endblock %}
 
 {% block content %}
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'index' %}">Not Uygulaması</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Ana Sayfa</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Hakkımızda</a>
-                    </li>
-                    <!-- Kullanıcı login olduysa gösterilecek butonlar -->
+<div class="col-12 bg-gray-900 text-white min-h-screen">
+    <header class="border-b border-gray-800">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-8 h-8">
+                <h1 class="text-2xl font-bold text-green-400">Not Uygulaması</h1>
+            </div>
+           <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="{% url 'index' %}" class="nav-link active" aria-current="page">Ana Sayfa</a></li>
+                    <li><a href="#" class="nav-link">Hakkımızda</a></li>
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                        </li>
+                        <li><a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a></li>
+                        <li><a href="{% url 'logout' %}" class="nav-link">Çıkış Yap</a></li>
                     {% else %}
-                        <!-- Kullanıcı login olmadıysa gösterilecek butonlar -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">İletişim</a>
-                        </li>
+                        <li><a href="{% url 'login' %}" class="nav-link">Giriş Yap</a></li>
+                        <li><a href="{% url 'register' %}" class="nav-link">Kayıt Ol</a></li>
                     {% endif %}
+                    <li><a href="#" class="nav-link">İletişim</a></li>
                 </ul>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-4">
+                <i data-lucide="moon"></i>
+                <i data-lucide="message-circle"></i>
+                <i data-lucide="twitter"></i>
+                <i data-lucide="github"></i>
+            </div>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Ana İçerik -->
-    <div class="container mt-5">
-        <!-- Açıklama Bölümü -->
-        <section class="text-center mb-5">
-            <h1>Note Uygulaması</h1>
-            <p>Notlarınızı kolayca organize edin, hatırlatmalar oluşturun ve notlarınızı güvenle saklayın.</p>
-        </section>
-
-        <!-- Abonelik Kartları -->
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card text-center bg-dark text-light mb-4">
-                    <div class="card-header">
-                        Ücretsiz
-                    </div>
-                    <div class="card-body">
-                        <p>• 100 Not Saklama<br>• Sınırlı Özellikler<br>• Reklamlı Kullanım</p>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-primary">Başla</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card text-center bg-dark text-light mb-4">
-                    <div class="card-header">
-                        Standart
-                    </div>
-                    <div class="card-body">
-                        <p>• 1000 Not Saklama<br>• Gelişmiş Özellikler<br>• Reklamsız Kullanım</p>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-secondary">Başla</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card text-center bg-dark text-light mb-4">
-                    <div class="card-header">
-                        Premium
-                    </div>
-                    <div class="card-body">
-                        <p>• Sınırsız Not Saklama<br>• Tüm Özellikler<br>• Reklamsız Kullanım<br>• 7/24 Destek</p>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-success">Başla</button>
-                    </div>
-                </div>
+    <main class="container mx-auto px-4 py-12" role="main">
+        <div class="text-center mb-12">
+            <h2 class="text-5xl font-bold mb-4">Not Uygulaması</h2>
+            <p class="text-xl text-gray-400 mb-8">Notlarınızı kolayca organize edin, hatırlatmalar oluşturun ve notlarınızı güvenle saklayın.</p>
+            <div class="flex justify-center space-x-4">
+                <a href="#" class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600">Get Started</a>
+                <a href="#" class="bg-gray-700 text-white px-6 py-2 rounded-md hover:bg-gray-600">Browse API</a>
+                <a href="#" class="bg-gray-700 text-white px-6 py-2 rounded-md hover:bg-gray-600">View on GitHub</a>
             </div>
         </div>
-    </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light mt-5 p-4 text-center">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>Hakkımızda</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light">Şirket Bilgisi</a></li>
-                        <li><a href="#" class="text-light">Kariyer</a></li>
-                        <li><a href="#" class="text-light">Basın</a></li>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 mt-12">
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <div class="text-4xl mb-4">🛍️</div>
+                <h3 class="text-xl font-semibold mb-2">Products</h3>
+                <p class="text-gray-400">Generate Prices, Product Names, Adjectives, and Descriptions.</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <div class="text-4xl mb-4">💰</div>
+                <h3 class="text-xl font-semibold mb-2">Finance</h3>
+                <p class="text-gray-400">Create stubbed out Account Details, Transactions, and Crypto Addresses.</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <div class="text-4xl mb-4">📍</div>
+                <h3 class="text-xl font-semibold mb-2">Locations</h3>
+                <p class="text-gray-400">Generate valid Addresses, Zip Codes, Street Names, States, and Countries!</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <div class="text-4xl mb-4">🖥️</div>
+                <h3 class="text-xl font-semibold mb-2">Hacker Jargon</h3>
+                <p class="text-gray-400">"Try to reboot the SQL bus, maybe it will bypass the virtual application!"</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <div class="text-4xl mb-4">⏰</div>
+                <h3 class="text-xl font-semibold mb-2">Time-based Data</h3>
+                <p class="text-gray-400">Past, present, future, recent, soon... whenever!</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <div class="text-4xl mb-4">🌍</div>
+                <h3 class="text-xl font-semibold mb-2">Localization</h3>
+                <p class="text-gray-400">Pick a locale to generate realistic looking Names, Addresses, and Phone Numbers.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Hakkımızda</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Şirket Bilgisi</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Kariyer</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Basın</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h5>Destek</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light">Yardım Merkezi</a></li>
-                        <li><a href="#" class="text-light">Gizlilik Politikası</a></li>
-                        <li><a href="#" class="text-light">Şartlar ve Koşullar</a></li>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Destek</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Yardım Merkezi</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Gizlilik Politikası</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Şartlar ve Koşullar</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h5>Bizi Takip Edin</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light"><i class="fab fa-facebook"></i> Facebook</a></li>
-                        <li><a href="#" class="text-light"><i class="fab fa-twitter"></i> Twitter</a></li>
-                        <li><a href="#" class="text-light"><i class="fab fa-instagram"></i> Instagram</a></li>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Bizi Takip Edin</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Facebook</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Twitter</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Instagram</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="mt-3">
-                <p>&copy; 2024 Not Uygulaması. Tüm Hakları Saklıdır.</p>
+            <div class="text-center text-gray-400">
+                <p>Released under the MIT License.</p>
+                <p>© {% now "Y" %} Not Uygulaması. Tüm Hakları Saklıdır.</p>
             </div>
         </div>
     </footer>
+</div>
+ {% block extra_js %}
+   <script>
+        lucide.createIcons();
+    </script>
 {% endblock %}
+{% endblock %}
+

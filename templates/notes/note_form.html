@@ -2,46 +2,157 @@
 {% load static %}
 
 {% block extra_head %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
-    <style>
-        .reminder-group {
-            display: flex;
-            align-items: center;
-        }
-        .reminder-group input[type="checkbox"] {
-            margin-right: 10px;
-        }
-    </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
+<style>
+    .form-container {
+        background-color: #2a2a3a;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .form-title {
+        color: #7e57c2;
+        margin-bottom: 30px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-control {
+        background-color: #3a3a4f;
+        border: 1px solid #4a4a5f;
+        color: #ffffff;
+    }
+    .form-control:focus {
+        background-color: #3a3a4f;
+        border-color: #7e57c2;
+        box-shadow: 0 0 0 0.2rem rgba(126, 87, 194, 0.25);
+        color: #ffffff;
+    }
+    .btn-primary {
+        background-color: #7e57c2;
+        border-color: #7e57c2;
+    }
+    .btn-primary:hover {
+        background-color: #6a4caf;
+        border-color: #6a4caf;
+    }
+    .bootstrap-tagsinput {
+        width: 100%;
+        background-color: #3a3a4f;
+        border: 1px solid #4a4a5f;
+        color: #ffffff;
+        min-height: 38px;
+    }
+    .bootstrap-tagsinput .tag {
+        background-color: #7e57c2;
+        color: #ffffff;
+    }
+    .color-picker-container {
+        display: flex;
+        align-items: center;
+    }
+    #id_color {
+        height: 38px;
+        padding: 6px;
+        border: none;
+        background-color: transparent;
+    }
+    .color-preview {
+        width: 38px;
+        height: 38px;
+        border: 1px solid #4a4a5f;
+        border-radius: 4px;
+        display: inline-block;
+        margin-left: 10px;
+    }
+    .custom-control-label {
+        padding-top: 3px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>{{ action }} Note</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
-        {% for field in form %}
-            {% if field.name != 'reminder' and field.name != 'reminder_active' %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <div class="error">{{ field.errors }}</div>
-                    {% endif %}
-                </div>
-            {% endif %}
-        {% endfor %}
-        <div class="form-group reminder-group">
-            {{ form.reminder_active }}
-            <label for="{{ form.reminder_active.id_for_label }}">{{ form.reminder_active.label }}</label>
-            {{ form.reminder }}
-            {% if form.reminder.errors %}
-                <div class="error">{{ form.reminder.errors }}</div>
-            {% endif %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="form-container">
+                <h2 class="form-title text-center">{{ action }} Not</h2>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}">{{ form.title.label }}:</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="error text-danger">{{ form.title.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.content.id_for_label }}">{{ form.content.label }}:</label>
+                        {{ form.content }}
+                        {% if form.content.errors %}
+                            <div class="error text-danger">{{ form.content.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.color.id_for_label }}">{{ form.color.label }}:</label>
+                        <div class="color-picker-container">
+                            {{ form.color }}
+                            <div class="color-preview" id="colorPreview"></div>
+                        </div>
+                        {% if form.color.errors %}
+                            <div class="error text-danger">{{ form.color.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.category.id_for_label }}">{{ form.category.label }}:</label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="error text-danger">{{ form.category.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.tags.id_for_label }}">{{ form.tags.label }}:</label>
+                        {{ form.tags }}
+                        {% if form.tags.errors %}
+                            <div class="error text-danger">{{ form.tags.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.created_at.id_for_label }}">{{ form.created_at.label }}:</label>
+                        {{ form.created_at }}
+                        {% if form.created_at.errors %}
+                            <div class="error text-danger">{{ form.created_at.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            {{ form.reminder_active }}
+                            <label class="custom-control-label" for="{{ form.reminder_active.id_for_label }}">{{ form.reminder_active.label }}</label>
+                        </div>
+                        <div id="reminderDateTimeContainer" style="display: none; margin-top: 10px;">
+                            {{ form.reminder }}
+                        </div>
+                        {% if form.reminder.errors %}
+                            <div class="error text-danger">{{ form.reminder.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group text-center mt-4">
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary ml-2">İptal</a>
+                    </div>
+                </form>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a href="{% url 'dashboard' %}" style="text-decoration: none">Cancel</a>
-    </form>
+    </div>
 </div>
 {% endblock %}
 
@@ -49,21 +160,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('input[data-role="tagsinput"]').tagsinput();
+        $('#id_tags').tagsinput({
+            trimValue: true,
+            confirmKeys: [13, 44, 32]
+        });
 
-        var $reminderCheckbox = $('#{{ form.reminder_active.id_for_label }}');
-        var $reminderDatetime = $('#{{ form.reminder.id_for_label }}');
-
-        function toggleReminderDatetime() {
-            if ($reminderCheckbox.is(':checked')) {
-                $reminderDatetime.prop('disabled', false);
-            } else {
-                $reminderDatetime.prop('disabled', true);
-            }
+        function updateColorPreview() {
+            $('#colorPreview').css('background-color', $('#id_color').val());
         }
 
-        $reminderCheckbox.change(toggleReminderDatetime);
-        toggleReminderDatetime();  // Initial state
+        $('#id_color').on('input', updateColorPreview);
+        updateColorPreview();
+
+        $('#id_reminder_active').change(function() {
+            $('#reminderDateTimeContainer').toggle(this.checked);
+        });
+
+        if ($('#id_reminder_active').is(':checked')) {
+            $('#reminderDateTimeContainer').show();
+        }
     });
 </script>
 {% endblock %}

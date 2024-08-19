@@ -5,11 +5,11 @@ Not Uygulaması, Django ile geliştirilmiş kapsamlı bir not tutma ve yönetme 
 ## Ekran Görüntüleri
 
 ### Ana Sayfa
-![Ana Sayfa](screenshots/index.png)
+![Ana Sayfa](/index.png)
 *Not Uygulamasının ana sayfası*
 
 ### Dashboard
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](/dashboard.png)
 *Kullanıcı dashboard'u ve not yönetimi arayüzü*
 
 ## Özellikler
